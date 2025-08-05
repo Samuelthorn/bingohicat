@@ -20,31 +20,39 @@ window.enterGame = function () {
 
 // ========== CRIAR SALA ==========
 window.createRoom = function () {
-  roomId = Math.random().toString(36).substring(2, 6).toUpperCase();
-  joinCreatedRoom(roomId, true);
+  socket.emit("createRoom", { username }, (response) => {
+    if (response.error) {
+      alert(response.error);
+      return;
+    }
+
+    roomId = response.roomId;
+    document.getElementById("lobby").classList.add("hidden");
+    document.getElementById("room").classList.remove("hidden");
+    document.getElementById("roomIdDisplay").innerText = roomId;
+
+    // Dono da sala vê botão "Iniciar"
+    document.getElementById("startGameBtn").classList.remove("hidden");
+  });
 };
 
 // ========== ENTRAR NA SALA EXISTENTE ==========
 window.joinRoom = function () {
   const inputId = document.getElementById("roomIdInput").value.trim().toUpperCase();
   if (!inputId) return alert("Digite o ID da sala!");
+  
   roomId = inputId;
-  joinCreatedRoom(roomId, false);
+  socket.emit("joinRoom", { roomId, username }, (response) => {
+    if (response.error) {
+      alert(response.error);
+      return;
+    }
+
+    document.getElementById("lobby").classList.add("hidden");
+    document.getElementById("room").classList.remove("hidden");
+    document.getElementById("roomIdDisplay").innerText = roomId;
+  });
 };
-
-// Função auxiliar para entrar na sala (seja criador ou participante)
-function joinCreatedRoom(id, isOwner) {
-  document.getElementById("lobby").classList.add("hidden");
-  document.getElementById("room").classList.remove("hidden");
-  document.getElementById("roomIdDisplay").innerText = id;
-
-  socket.emit("joinRoom", { roomId: id, username, isOwner });
-
-  // Dono da sala vê botão "Iniciar"
-  if (isOwner) {
-    document.getElementById("startGameBtn").classList.remove("hidden");
-  }
-}
 
 // ========== ESCOLHER CARTELA ==========
 socket.on("cardsGenerated", (cards) => {
@@ -75,9 +83,9 @@ window.startGame = function () {
 };
 
 // Quando o jogo começa, exibe a cartela para marcar
-socket.on("gameStarted", (card) => {
-  bingoNumbers = card;
-  renderBingoBoard(card);
+socket.on("gameStarted", () => {
+  bingoNumbers = selectedCard;
+  renderBingoBoard(selectedCard);
   document.getElementById("bingoBoard").classList.remove("hidden");
   document.getElementById("bingoBtn").classList.remove("hidden");
   document.getElementById("gameStatus").innerText = "O jogo começou! Aguarde os números sorteados.";
