@@ -1,5 +1,5 @@
 // Conectar ao backend via Socket.IO
-const socket = io("https://throughout-needle-dresses-jones.trycloudflare.com");
+const socket = io("http://gamerhicat.trycloudflare.com.punkilive.top/");
 
 // Variáveis globais
 let username = "";
