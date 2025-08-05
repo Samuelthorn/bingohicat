@@ -1,4 +1,4 @@
-const socket = io("https://SEU_TUNEL.trycloudflare.com"); // Substitua pelo seu link Cloudflare Tunnel HTTPS
+const socket = io("https://throughout-needle-dresses-jones.trycloudflare.com  "); // Substitua pelo seu link Cloudflare Tunnel HTTPS
 
 let username = "";
 let currentRoomId = "";
