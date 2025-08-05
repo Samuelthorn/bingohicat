@@ -1,36 +1,29 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bingo Multiplayer</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="login">
-    <h2>Bingo Multiplayer</h2>
-    <input type="text" id="username" placeholder="Seu nome">
-    <button onclick="enterGame()">Entrar</button>
-  </div>
+<!-- Exemplo simplificado: -->
 
-  <div id="lobby" class="hidden">
-    <h3>Bem-vindo, <span id="playerName"></span></h3>
-    <button onclick="createRoom()">Criar Sala</button>
-    <input type="text" id="roomIdInput" placeholder="ID da Sala">
-    <button onclick="joinRoom()">Entrar na Sala</button>
-    <p id="roomStatus"></p>
-  </div>
+<div id="login">
+  <input id="username" placeholder="Seu nome"/>
+  <button onclick="enterGame()">Entrar</button>
+</div>
 
-  <div id="room" class="hidden">
-    <h3>Sala: <span id="roomIdDisplay"></span></h3>
-    <div id="cardsContainer"></div>
-    <button id="startGameBtn" class="hidden" onclick="startGame()">Iniciar Jogo</button>
-    <p id="gameStatus"></p>
-    <div id="bingoBoard" class="hidden"></div>
-    <button id="bingoBtn" class="hidden" onclick="declareBingo()">Bingou!</button>
-  </div>
+<div id="lobby" class="hidden">
+  <p>Olá, <span id="playerName"></span></p>
+  <button onclick="createRoom()">Criar sala</button>
+  <input id="roomIdInput" placeholder="ID da sala"/>
+  <button onclick="joinRoom()">Entrar na sala</button>
+</div>
 
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+<div id="room" class="hidden">
+  <p>Sala: <span id="roomIdDisplay"></span></p>
+  <div id="cardsContainer"></div>
+  <button id="startGameBtn" onclick="startGame()" class="hidden">Iniciar jogo</button>
+  <div id="gameStatus"></div>
+  <div id="bingoBoard" class="hidden"></div>
+  <button id="bingoBtn" onclick="declareBingo()" class="hidden">BINGO!</button>
+</div>
+
+<style>
+  .hidden { display:none; }
+  #bingoBoard { display: grid; grid-template-columns: repeat(5, 50px); gap: 5px; margin-top: 10px; }
+  .cell { width: 50px; height: 50px; border: 1px solid #333; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+  .cell.marked { background-color: yellow; }
+</style>
