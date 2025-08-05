@@ -1,16 +1,16 @@
-// CONECTAR AO BACKEND
-const socket = io("https://et-gardens-tops-mhz.trycloudflare.com"); // seu IP VPS
+const socket = io("https://SEU_TUNEL.trycloudflare.com"); // Substitua pelo seu link Cloudflare Tunnel HTTPS
 
 let username = "";
 let currentRoomId = "";
 let selectedCard = [];
 let isHost = false;
+let drawnNumbers = [];
 
-// Gerar 4 cartelas com 25 números aleatórios cada
+// Gerar cartelas de 25 números aleatórios (1 a 100)
 function generateCards() {
   let cards = [];
   for (let i = 0; i < 4; i++) {
-    let numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 75) + 1);
+    let numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 100) + 1);
     cards.push(numbers);
   }
   return cards;
@@ -86,15 +86,34 @@ function renderBoard(numbers) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.innerText = num;
-    cell.onclick = () => cell.classList.toggle("marked");
+    cell.onclick = () => markNumber(num, cell);
     board.appendChild(cell);
   });
   document.getElementById("bingoBtn").classList.remove("hidden");
+
+  const status = document.createElement("div");
+  status.id = "drawnNumbers";
+  status.innerHTML = "<h4>Números sorteados:</h4><p id='drawnList'></p>";
+  document.getElementById("room").appendChild(status);
+}
+
+function markNumber(num, cell) {
+  if (drawnNumbers.includes(num)) {
+    cell.classList.toggle("marked");
+    socket.emit("markNumber", { roomId: currentRoomId, number: num });
+  } else {
+    alert("Você só pode marcar números que já foram sorteados!");
+  }
 }
 
 window.declareBingo = function() {
   socket.emit("declareBingo", currentRoomId);
 };
+
+socket.on("numberDrawn", ({ number, allNumbers }) => {
+  drawnNumbers = allNumbers;
+  document.getElementById("drawnList").innerText = drawnNumbers.join(", ");
+});
 
 socket.on("winner", (winner) => {
   alert(`BINGO! ${winner} venceu!`);
