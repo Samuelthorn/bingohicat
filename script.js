@@ -84,8 +84,8 @@ socket.on("gameStarted", (card) => {
 });
 
 // ========== SORTEIO DE NÚMEROS ==========
-socket.on("numberDrawn", (number) => {
-  drawnNumbers.push(number);
+socket.on("numberDrawn", ({ number, allNumbers }) => {
+  drawnNumbers = allNumbers;
   document.getElementById("drawnList").innerText = drawnNumbers.join(", ");
 });
 
