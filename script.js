@@ -1,120 +1,128 @@
-const socket = io("https://throughout-needle-dresses-jones.trycloudflare.com  "); // Substitua pelo seu link Cloudflare Tunnel HTTPS
+// Conectar ao backend via Socket.IO
+const socket = io("https://throughout-needle-dresses-jones.trycloudflare.com");
 
+// Variáveis globais
 let username = "";
-let currentRoomId = "";
-let selectedCard = [];
-let isHost = false;
+let roomId = "";
+let selectedCard = null;
+let bingoNumbers = [];
 let drawnNumbers = [];
 
-// Gerar cartelas de 25 números aleatórios (1 a 100)
-function generateCards() {
-  let cards = [];
-  for (let i = 0; i < 4; i++) {
-    let numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 100) + 1);
-    cards.push(numbers);
-  }
-  return cards;
-}
-
-function displayCards(cards) {
-  const container = document.getElementById("cardsContainer");
-  container.innerHTML = "";
-  cards.forEach((card, index) => {
-    const div = document.createElement("div");
-    div.innerHTML = `<p>Cartela ${index + 1}</p><p>${card.join(", ")}</p>`;
-    div.onclick = () => selectCard(card);
-    container.appendChild(div);
-  });
-}
-
-function selectCard(card) {
-  selectedCard = card;
-  document.getElementById("cardsContainer").innerHTML = `<p>Cartela escolhida!</p>`;
-  socket.emit("selectCard", { roomId: currentRoomId, card });
-  if (isHost) document.getElementById("startGameBtn").classList.remove("hidden");
-}
-
-window.enterGame = function() {
+// ========== LOGIN ==========
+window.enterGame = function () {
   username = document.getElementById("username").value.trim();
   if (!username) return alert("Digite um nome!");
+
   document.getElementById("login").classList.add("hidden");
   document.getElementById("lobby").classList.remove("hidden");
   document.getElementById("playerName").innerText = username;
 };
 
-window.createRoom = function() {
-  socket.emit("createRoom", (roomId) => {
-    isHost = true;
-    enterRoom(roomId);
-  });
+// ========== CRIAR SALA ==========
+window.createRoom = function () {
+  roomId = Math.random().toString(36).substring(2, 6).toUpperCase();
+  joinCreatedRoom(roomId, true);
 };
 
-window.joinRoom = function() {
-  const roomIdInput = document.getElementById("roomIdInput").value.trim();
-  if (!roomIdInput) return alert("Digite o ID da sala!");
-  enterRoom(roomIdInput);
+// ========== ENTRAR NA SALA EXISTENTE ==========
+window.joinRoom = function () {
+  const inputId = document.getElementById("roomIdInput").value.trim().toUpperCase();
+  if (!inputId) return alert("Digite o ID da sala!");
+  roomId = inputId;
+  joinCreatedRoom(roomId, false);
 };
 
-function enterRoom(roomId) {
-  currentRoomId = roomId;
-  socket.emit("joinRoom", { roomId, username }, (response) => {
-    if (response.error) return alert(response.error);
+// Função auxiliar para entrar na sala (seja criador ou participante)
+function joinCreatedRoom(id, isOwner) {
+  document.getElementById("lobby").classList.add("hidden");
+  document.getElementById("room").classList.remove("hidden");
+  document.getElementById("roomIdDisplay").innerText = id;
 
-    document.getElementById("lobby").classList.add("hidden");
-    document.getElementById("room").classList.remove("hidden");
-    document.getElementById("roomIdDisplay").innerText = roomId;
+  socket.emit("joinRoom", { roomId: id, username, isOwner });
 
-    const cards = generateCards();
-    displayCards(cards);
-  });
-}
-
-window.startGame = function() {
-  socket.emit("startGame", currentRoomId);
-};
-
-socket.on("gameStarted", () => {
-  document.getElementById("gameStatus").innerText = "Jogo iniciado!";
-  renderBoard(selectedCard);
-});
-
-function renderBoard(numbers) {
-  const board = document.getElementById("bingoBoard");
-  board.classList.remove("hidden");
-  board.innerHTML = "";
-  numbers.forEach(num => {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.innerText = num;
-    cell.onclick = () => markNumber(num, cell);
-    board.appendChild(cell);
-  });
-  document.getElementById("bingoBtn").classList.remove("hidden");
-
-  const status = document.createElement("div");
-  status.id = "drawnNumbers";
-  status.innerHTML = "<h4>Números sorteados:</h4><p id='drawnList'></p>";
-  document.getElementById("room").appendChild(status);
-}
-
-function markNumber(num, cell) {
-  if (drawnNumbers.includes(num)) {
-    cell.classList.toggle("marked");
-    socket.emit("markNumber", { roomId: currentRoomId, number: num });
-  } else {
-    alert("Você só pode marcar números que já foram sorteados!");
+  // Dono da sala vê botão "Iniciar"
+  if (isOwner) {
+    document.getElementById("startGameBtn").classList.remove("hidden");
   }
 }
 
-window.declareBingo = function() {
-  socket.emit("declareBingo", currentRoomId);
+// ========== ESCOLHER CARTELA ==========
+socket.on("cardsGenerated", (cards) => {
+  const container = document.getElementById("cardsContainer");
+  container.innerHTML = "<h3>Escolha uma cartela:</h3>";
+
+  cards.forEach((card, index) => {
+    const div = document.createElement("div");
+    div.textContent = card.join(", ");
+    div.onclick = () => selectCard(index, card);
+    container.appendChild(div);
+  });
+});
+
+function selectCard(index, card) {
+  selectedCard = card;
+  socket.emit("selectCard", { roomId, username, card });
+
+  document.getElementById("cardsContainer").innerHTML =
+    `<h3>Sua cartela:</h3><p>${card.join(", ")}</p>`;
+}
+
+// ========== INICIAR JOGO ==========
+window.startGame = function () {
+  if (!selectedCard) return alert("Escolha uma cartela antes de iniciar!");
+  socket.emit("startGame", { roomId });
+  document.getElementById("startGameBtn").classList.add("hidden");
 };
 
-socket.on("numberDrawn", ({ number, allNumbers }) => {
-  drawnNumbers = allNumbers;
+// Quando o jogo começa, exibe a cartela para marcar
+socket.on("gameStarted", (card) => {
+  bingoNumbers = card;
+  renderBingoBoard(card);
+  document.getElementById("bingoBoard").classList.remove("hidden");
+  document.getElementById("bingoBtn").classList.remove("hidden");
+  document.getElementById("gameStatus").innerText = "O jogo começou! Aguarde os números sorteados.";
+});
+
+// ========== SORTEIO DE NÚMEROS ==========
+socket.on("numberDrawn", (number) => {
+  drawnNumbers.push(number);
   document.getElementById("drawnList").innerText = drawnNumbers.join(", ");
 });
 
-socket.on("winner", (winner) => {
-  alert(`BINGO! ${winner} venceu!`);
+// Renderiza a cartela do bingo
+function renderBingoBoard(card) {
+  const board = document.getElementById("bingoBoard");
+  board.innerHTML = "";
+
+  card.forEach((num) => {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.textContent = num;
+
+    cell.onclick = () => {
+      // Só pode marcar se o número foi sorteado
+      if (drawnNumbers.includes(num)) {
+        cell.classList.toggle("marked");
+      } else {
+        alert("Você só pode marcar números sorteados!");
+      }
+    };
+
+    board.appendChild(cell);
+  });
+}
+
+// ========== DECLARAR BINGO ==========
+window.declareBingo = function () {
+  const markedCells = document.querySelectorAll(".cell.marked").length;
+  if (markedCells === bingoNumbers.length) {
+    socket.emit("declareBingo", { roomId, username });
+  } else {
+    alert("Você ainda não marcou todos os números!");
+  }
+};
+
+socket.on("bingoDeclared", (winner) => {
+  document.getElementById("gameStatus").innerText = `${winner} fez BINGO!`;
+  document.getElementById("bingoBtn").classList.add("hidden");
 });
