@@ -1,5 +1,5 @@
 // CONECTAR AO BACKEND
-const socket = io("http://172.237.54.177:3000"); // seu IP VPS
+const socket = io("https://et-gardens-tops-mhz.trycloudflare.com"); // seu IP VPS
 
 let username = "";
 let currentRoomId = "";
