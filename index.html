@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingo Multiplayer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login">
+    <h2>Bingo Multiplayer</h2>
+    <input type="text" id="username" placeholder="Seu nome">
+    <button onclick="enterGame()">Entrar</button>
+  </div>
+
+  <div id="lobby" class="hidden">
+    <h3>Bem-vindo, <span id="playerName"></span></h3>
+    <button onclick="createRoom()">Criar Sala</button>
+    <input type="text" id="roomIdInput" placeholder="ID da Sala">
+    <button onclick="joinRoom()">Entrar na Sala</button>
+    <p id="roomStatus"></p>
+  </div>
+
+  <div id="room" class="hidden">
+    <h3>Sala: <span id="roomIdDisplay"></span></h3>
+    <div id="cardsContainer"></div>
+    <button id="startGameBtn" class="hidden" onclick="startGame()">Iniciar Jogo</button>
+    <p id="gameStatus"></p>
+    <div id="bingoBoard" class="hidden"></div>
+    <button id="bingoBtn" class="hidden" onclick="declareBingo()">Bingou!</button>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
