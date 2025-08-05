@@ -1,29 +1,93 @@
-<!-- Exemplo simplificado: -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bingo Multiplayer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .hidden { display: none; }
+    #bingoBoard {
+      display: grid;
+      grid-template-columns: repeat(5, 50px);
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .cell {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cell.marked {
+      background-color: yellow;
+      font-weight: bold;
+    }
+    #cardsContainer div {
+      border: 1px solid #555;
+      margin-bottom: 10px;
+      padding: 10px;
+      cursor: pointer;
+      user-select: none;
+      max-width: 260px;
+      word-wrap: break-word;
+    }
+    #cardsContainer div:hover {
+      background-color: #eee;
+    }
+    button {
+      margin: 5px 0;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
 
-<div id="login">
-  <input id="username" placeholder="Seu nome"/>
-  <button onclick="enterGame()">Entrar</button>
-</div>
+  <!-- Tela de login -->
+  <div id="login">
+    <h2>Entre com seu nome</h2>
+    <input id="username" placeholder="Seu nome" />
+    <br />
+    <button onclick="enterGame()">Entrar</button>
+  </div>
 
-<div id="lobby" class="hidden">
-  <p>Olá, <span id="playerName"></span></p>
-  <button onclick="createRoom()">Criar sala</button>
-  <input id="roomIdInput" placeholder="ID da sala"/>
-  <button onclick="joinRoom()">Entrar na sala</button>
-</div>
+  <!-- Tela lobby -->
+  <div id="lobby" class="hidden">
+    <p>Olá, <b><span id="playerName"></span></b></p>
+    <button onclick="createRoom()">Criar Sala</button>
+    <br />
+    <input id="roomIdInput" placeholder="ID da sala" maxlength="4" style="text-transform:uppercase"/>
+    <button onclick="joinRoom()">Entrar na Sala</button>
+  </div>
 
-<div id="room" class="hidden">
-  <p>Sala: <span id="roomIdDisplay"></span></p>
-  <div id="cardsContainer"></div>
-  <button id="startGameBtn" onclick="startGame()" class="hidden">Iniciar jogo</button>
-  <div id="gameStatus"></div>
-  <div id="bingoBoard" class="hidden"></div>
-  <button id="bingoBtn" onclick="declareBingo()" class="hidden">BINGO!</button>
-</div>
+  <!-- Tela sala -->
+  <div id="room" class="hidden">
+    <p>Sala: <b><span id="roomIdDisplay"></span></b></p>
+    <div id="cardsContainer"></div>
+    <button id="startGameBtn" onclick="startGame()" class="hidden">Iniciar Jogo</button>
+    <p id="gameStatus"></p>
 
-<style>
-  .hidden { display:none; }
-  #bingoBoard { display: grid; grid-template-columns: repeat(5, 50px); gap: 5px; margin-top: 10px; }
-  .cell { width: 50px; height: 50px; border: 1px solid #333; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-  .cell.marked { background-color: yellow; }
-</style>
+    <div id="bingoBoard" class="hidden"></div>
+    <button id="bingoBtn" onclick="declareBingo()" class="hidden">BINGO!</button>
+
+    <div id="drawnNumbers" style="margin-top: 15px;">
+      <h4>Números sorteados:</h4>
+      <p id="drawnList"></p>
+    </div>
+  </div>
+
+  <!-- Socket.IO -->
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js" integrity="sha384-pA4/dNJlMkBqle2UK8HoZK9Xx6r3h9t2MqgqpVyqS/5E3Z6Rb3vCxE03CJdq0Laj" crossorigin="anonymous"></script>
+  <!-- Seu script principal -->
+  <script src="script.js"></script>
+
+</body>
+</html>
