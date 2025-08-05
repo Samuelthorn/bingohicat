@@ -1,5 +1,5 @@
 // Conectar ao backend via Socket.IO
-const socket = io("http://gamerhicat.trycloudflare.com.punkilive.top/");
+const socket = io("https://bingo.punkilive.top/");
 
 // Variáveis globais
 let username = "";
