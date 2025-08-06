@@ -40,7 +40,7 @@ window.createRoom = function () {
 window.joinRoom = function () {
   const inputId = document.getElementById("roomIdInput").value.trim().toUpperCase();
   if (!inputId) return alert("Digite o ID da sala!");
-  
+
   roomId = inputId;
   socket.emit("joinRoom", { roomId, username }, (response) => {
     if (response.error) {
@@ -57,6 +57,7 @@ window.joinRoom = function () {
 // ========== ESCOLHER CARTELA ==========
 socket.on("cardsGenerated", (cards) => {
   const container = document.getElementById("cardsContainer");
+  container.classList.remove("hidden"); // Garantir que esteja visível para escolha
   container.innerHTML = "<h3>Escolha uma cartela:</h3>";
 
   cards.forEach((card, index) => {
@@ -75,7 +76,7 @@ socket.on("cardsGenerated", (cards) => {
 
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 5; col++) {
-        const indexNum = row * 5 + col; // 0-14
+        const indexNum = row * 5 + col;
         const cell = document.createElement("div");
         cell.classList.add("bingo-cell");
         cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
@@ -96,7 +97,7 @@ function selectCard(index, card) {
   selectedCard = card;
   socket.emit("selectCard", { roomId, username, card });
 
-  // Mostra cartela escolhida (só uma vez)
+  // Mostra apenas a cartela escolhida (esconde as outras)
   const container = document.getElementById("cardsContainer");
   container.innerHTML = "";
 
@@ -109,7 +110,7 @@ function selectCard(index, card) {
   header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
   div.appendChild(header);
 
-  // Grid números (3 linhas × 5 colunas)
+  // Grade de números (3 linhas × 5 colunas)
   const grid = document.createElement("div");
   grid.classList.add("bingo-grid");
 
@@ -138,10 +139,10 @@ window.startGame = function () {
 socket.on("gameStarted", () => {
   bingoNumbers = selectedCard;
 
-  // Esconde container de escolha (para não duplicar)
+  // Esconde container de escolha para evitar duplicação da cartela
   document.getElementById("cardsContainer").classList.add("hidden");
 
-  // Renderiza cartela para marcar
+  // Renderiza a cartela para marcar números
   renderBingoBoard(selectedCard);
 
   document.getElementById("bingoBoard").classList.remove("hidden");
@@ -166,7 +167,7 @@ function renderBingoBoard(card) {
   header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
   board.appendChild(header);
 
-  // Grid números (3 linhas × 5 colunas)
+  // Grade de números (3 linhas × 5 colunas)
   const grid = document.createElement("div");
   grid.classList.add("bingo-grid");
 
