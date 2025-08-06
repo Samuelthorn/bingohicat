@@ -1,212 +1,26 @@
-// Conectar ao backend via Socket.IO
-const socket = io("https://bingo.punkilive.top/");
-
-// Variáveis globais
-let username = "";
-let roomId = "";
-let selectedCard = null;
-let bingoNumbers = [];
-let drawnNumbers = [];
-
-// ========== LOGIN ==========
-window.enterGame = function () {
-  username = document.getElementById("username").value.trim();
-  if (!username) return alert("Digite um nome!");
-
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("lobby").classList.remove("hidden");
-  document.getElementById("playerName").innerText = username;
-};
-
-// ========== CRIAR SALA ==========
-window.createRoom = function () {
-  socket.emit("createRoom", { username }, (response) => {
-    if (response.error) {
-      alert(response.error);
-      return;
-    }
-
-    roomId = response.roomId;
-    document.getElementById("lobby").classList.add("hidden");
-    document.getElementById("room").classList.remove("hidden");
-    document.getElementById("roomIdDisplay").innerText = roomId;
-
-    // Dono da sala vê botão "Iniciar"
-    document.getElementById("startGameBtn").classList.remove("hidden");
-  });
-};
-
-// ========== ENTRAR NA SALA EXISTENTE ==========
-window.joinRoom = function () {
-  const inputId = document.getElementById("roomIdInput").value.trim().toUpperCase();
-  if (!inputId) return alert("Digite o ID da sala!");
-
-  roomId = inputId;
-  socket.emit("joinRoom", { roomId, username }, (response) => {
-    if (response.error) {
-      alert(response.error);
-      return;
-    }
-
-    document.getElementById("lobby").classList.add("hidden");
-    document.getElementById("room").classList.remove("hidden");
-    document.getElementById("roomIdDisplay").innerText = roomId;
-  });
-};
-
-// ========== ESCOLHER CARTELA ==========
-socket.on("cardsGenerated", (cards) => {
-  const container = document.getElementById("cardsContainer");
-  container.classList.remove("hidden"); // Garantir que esteja visível para escolha
-  container.innerHTML = "<h3>Escolha uma cartela:</h3>";
-
-  cards.forEach((card, index) => {
-    const div = document.createElement("div");
-    div.classList.add("bingo-card");
-
-    // Cabeçalho BINGO
-    const header = document.createElement("div");
-    header.classList.add("bingo-header");
-    header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
-    div.appendChild(header);
-
-    // Grade de números (3 linhas × 5 colunas)
-    const grid = document.createElement("div");
-    grid.classList.add("bingo-grid");
-
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 5; col++) {
-        const indexNum = row * 5 + col;
-        const cell = document.createElement("div");
-        cell.classList.add("bingo-cell");
-        cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
-        grid.appendChild(cell);
-      }
-    }
-
-    div.appendChild(grid);
-
-    // Clique para selecionar cartela
-    div.onclick = () => selectCard(index, card);
-
-    container.appendChild(div);
-  });
-});
-
-function selectCard(index, card) {
-  selectedCard = card;
-  socket.emit("selectCard", { roomId, username, card });
-
-  // Mostra apenas a cartela escolhida (esconde as outras)
-  const container = document.getElementById("cardsContainer");
-  container.innerHTML = "";
-
-  const div = document.createElement("div");
-  div.classList.add("bingo-card", "selected");
-
-  // Cabeçalho BINGO
-  const header = document.createElement("div");
-  header.classList.add("bingo-header");
-  header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
-  div.appendChild(header);
-
-  // Grade de números (3 linhas × 5 colunas)
-  const grid = document.createElement("div");
-  grid.classList.add("bingo-grid");
-
-  for (let row = 0; row < 3; row++) {
-    for (let col = 0; col < 5; col++) {
-      const indexNum = row * 5 + col;
-      const cell = document.createElement("div");
-      cell.classList.add("bingo-cell");
-      cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
-      grid.appendChild(cell);
-    }
-  }
-
-  div.appendChild(grid);
-  container.appendChild(div);
+#drawnList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
 }
 
-// ========== INICIAR JOGO ==========
-window.startGame = function () {
-  if (!selectedCard) return alert("Escolha uma cartela antes de iniciar!");
-  socket.emit("startGame", { roomId });
-  document.getElementById("startGameBtn").classList.add("hidden");
-};
-
-// Quando o jogo começa
-socket.on("gameStarted", () => {
-  bingoNumbers = selectedCard;
-
-  // Esconde container de escolha para evitar duplicação da cartela
-  document.getElementById("cardsContainer").style.display = "none";
-
-
-  // Renderiza a cartela para marcar números
-  renderBingoBoard(selectedCard);
-
-  document.getElementById("bingoBoard").classList.remove("hidden");
-  document.getElementById("bingoBtn").classList.remove("hidden");
-  document.getElementById("gameStatus").innerText = "O jogo começou! Marque seus números.";
-});
-
-// ========== SORTEIO DE NÚMEROS ==========
-socket.on("numberDrawn", ({ number, allNumbers }) => {
-  drawnNumbers = allNumbers;
-  document.getElementById("drawnList").innerText = drawnNumbers.join(", ");
-});
-
-// Renderiza a cartela do bingo para marcar números
-function renderBingoBoard(card) {
-  const board = document.getElementById("bingoBoard");
-  board.innerHTML = "";
-
-  // Cabeçalho BINGO
-  const header = document.createElement("div");
-  header.classList.add("bingo-header");
-  header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
-  board.appendChild(header);
-
-  // Grade de números (3 linhas × 5 colunas)
-  const grid = document.createElement("div");
-  grid.classList.add("bingo-grid");
-
-  for (let row = 0; row < 3; row++) {
-    for (let col = 0; col < 5; col++) {
-      const indexNum = row * 5 + col;
-      const cell = document.createElement("div");
-      cell.classList.add("bingo-cell");
-
-      if (card[indexNum] !== undefined) cell.textContent = card[indexNum];
-
-      // Marcar clicando
-      cell.onclick = () => {
-        if (drawnNumbers.includes(card[indexNum])) {
-          cell.classList.toggle("marked");
-        } else {
-          alert("Você só pode marcar números sorteados!");
-        }
-      };
-
-      grid.appendChild(cell);
-    }
-  }
-
-  board.appendChild(grid);
+.bingo-ball {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff 20%, #e63946 90%);
+  border: 2px solid #b22222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: #000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
 }
-
-// ========== DECLARAR BINGO ==========
-window.declareBingo = function () {
-  const markedCells = document.querySelectorAll(".bingo-cell.marked").length;
-  if (markedCells === bingoNumbers.length) {
-    socket.emit("declareBingo", { roomId, username });
-  } else {
-    alert("Você ainda não marcou todos os números!");
-  }
-};
-
-socket.on("bingoDeclared", (winner) => {
-  document.getElementById("gameStatus").innerText = `${winner} fez BINGO!`;
-  document.getElementById("bingoBtn").classList.add("hidden");
-});
+.bingo-ball:hover {
+  transform: scale(1.1);
+}
