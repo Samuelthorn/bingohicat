@@ -140,7 +140,8 @@ socket.on("gameStarted", () => {
   bingoNumbers = selectedCard;
 
   // Esconde container de escolha para evitar duplicação da cartela
-  document.getElementById("cardsContainer").classList.add("hidden");
+  document.getElementById("cardsContainer").style.display = "none";
+
 
   // Renderiza a cartela para marcar números
   renderBingoBoard(selectedCard);
