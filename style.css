@@ -45,9 +45,7 @@ body {
   font-weight: bold;
 }
 
-/* ====== NOVO ESTILO GAMER PARA LOGIN ====== */
-
-/* Fundo animado gamer só para tela de login */
+/* ====== LOGIN GAMER 3D (já feito antes) ====== */
 body.login-active {
   background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460, #e94560);
   background-size: 400% 400%;
@@ -61,7 +59,6 @@ body.login-active {
   100% {background-position: 0% 50%;}
 }
 
-/* Container do login */
 .login-container {
   background: rgba(0, 0, 0, 0.7);
   padding: 40px 30px;
@@ -74,20 +71,15 @@ body.login-active {
   transform: perspective(800px) rotateX(5deg);
   transition: transform 0.3s ease-in-out;
 }
-
 .login-container:hover {
   transform: perspective(800px) rotateX(0deg) scale(1.02);
 }
-
-/* Título neon */
 .login-container h2 {
   font-size: 28px;
   margin-bottom: 20px;
   color: #e94560;
   text-shadow: 0 0 5px #fff, 0 0 10px #e94560, 0 0 20px #e94560;
 }
-
-/* Input gamer */
 .login-container input {
   width: 100%;
   padding: 12px;
@@ -101,12 +93,9 @@ body.login-active {
   outline: none;
   transition: box-shadow 0.2s ease;
 }
-
 .login-container input:focus {
   box-shadow: 0 0 10px #e94560;
 }
-
-/* Botão gamer */
 .login-container button {
   width: 100%;
   padding: 12px;
@@ -120,9 +109,75 @@ body.login-active {
   transition: all 0.3s ease;
   box-shadow: 0 0 10px #e94560, 0 0 20px #e94560, 0 0 30px #e94560;
 }
-
 .login-container button:hover {
   background: #ff6b81;
   box-shadow: 0 0 20px #ff6b81, 0 0 40px #ff6b81;
   transform: translateY(-2px);
+}
+
+/* ====== ESTILO PARA LOBBY (botões, inputs, container) ====== */
+
+#lobby {
+  max-width: 400px;
+  margin: 80px auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#lobby p {
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 20px;
+  text-shadow: 0 0 5px #000;
+}
+
+/* Botões estilizados */
+#lobby button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #ff7eb3, #ff758c);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#lobby button:hover {
+  background: linear-gradient(90deg, #ff9bbf, #ff7b9c);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+/* Input do código da sala */
+#roomIdInput {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 2px solid #ff7eb3;
+  font-size: 16px;
+  text-align: center;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+#roomIdInput:focus {
+  border: 2px solid #ff9bbf;
 }
