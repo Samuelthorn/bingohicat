@@ -81,7 +81,7 @@ body.login-active {
   text-shadow: 0 0 5px #fff, 0 0 10px #e94560, 0 0 20px #e94560;
 }
 .login-container input {
-  width: 100%;
+  width: 90%;
   padding: 12px;
   margin-bottom: 20px;
   border: none;
