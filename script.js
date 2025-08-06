@@ -96,7 +96,7 @@ function selectCard(index, card) {
   selectedCard = card;
   socket.emit("selectCard", { roomId, username, card });
 
-  // Mostra apenas a cartela escolhida
+  // Mostra cartela escolhida (só uma vez)
   const container = document.getElementById("cardsContainer");
   container.innerHTML = "";
 
@@ -134,18 +134,18 @@ window.startGame = function () {
   document.getElementById("startGameBtn").classList.add("hidden");
 };
 
-// Quando o jogo começa, a cartela escolhida vira a cartela de marcação
+// Quando o jogo começa
 socket.on("gameStarted", () => {
   bingoNumbers = selectedCard;
 
-  // Reaproveitar a cartela escolhida para marcação
+  // Esconde container de escolha (para não duplicar)
+  document.getElementById("cardsContainer").classList.add("hidden");
+
+  // Renderiza cartela para marcar
   renderBingoBoard(selectedCard);
 
-  // Esconde container de escolha e mostra tabuleiro
-  document.getElementById("cardsContainer").classList.add("hidden");
   document.getElementById("bingoBoard").classList.remove("hidden");
   document.getElementById("bingoBtn").classList.remove("hidden");
-
   document.getElementById("gameStatus").innerText = "O jogo começou! Marque seus números.";
 });
 
@@ -160,15 +160,11 @@ function renderBingoBoard(card) {
   const board = document.getElementById("bingoBoard");
   board.innerHTML = "";
 
-  // Criar cartela igual ao estilo selecionado
-  const div = document.createElement("div");
-  div.classList.add("bingo-card", "selected");
-
   // Cabeçalho BINGO
   const header = document.createElement("div");
   header.classList.add("bingo-header");
   header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
-  div.appendChild(header);
+  board.appendChild(header);
 
   // Grid números (3 linhas × 5 colunas)
   const grid = document.createElement("div");
@@ -195,8 +191,7 @@ function renderBingoBoard(card) {
     }
   }
 
-  div.appendChild(grid);
-  board.appendChild(div);
+  board.appendChild(grid);
 }
 
 // ========== DECLARAR BINGO ==========
