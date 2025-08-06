@@ -236,10 +236,11 @@ body.login-active {
 #drawnList {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: row-reverse; /* Inverte a ordem, últimos vão pra esquerda */
   justify-content: center;
-  margin-top: 10px;
+  gap: 8px;
 }
+
 
 /* Estilo da bola */
 .bingo-ball {
