@@ -4,83 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bingo Multiplayer</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* --- Estilos padrões das outras telas (lobby, sala, etc) --- */
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    .hidden { display: none; }
-    #bingoBoard {
-      display: grid;
-      grid-template-columns: repeat(5, 50px);
-      gap: 5px;
-      margin-top: 10px;
-    }
-    .cell {
-      width: 50px;
-      height: 50px;
-      border: 1px solid #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .cell.marked {
-      background-color: yellow;
-      font-weight: bold;
-    }
-    #cardsContainer div {
-      border: 1px solid #555;
-      margin-bottom: 10px;
-      padding: 10px;
-      cursor: pointer;
-      user-select: none;
-      max-width: 260px;
-      word-wrap: break-word;
-    }
-    #cardsContainer div:hover {
-      background-color: #eee;
-    }
-    button {
-      margin: 5px 0;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="login-active">
 
-  <!-- Tela de login (com classe gamer para novo design) -->
+  <!-- Tela de login -->
   <div id="login" class="login-container">
-    <h2 class="title">Bingo Multiplayer</h2>
-    <input id="username" placeholder="Digite seu nome" class="input-gamer" />
-    <br />
-    <button onclick="enterGame()" class="btn-gamer">Entrar</button>
+    <h2>Bingo Multiplayer</h2>
+    <input id="username" placeholder="Digite seu nome" />
+    <button onclick="enterGame()">Entrar</button>
   </div>
 
   <!-- Tela lobby -->
   <div id="lobby" class="hidden">
     <p>Olá, <b><span id="playerName"></span></b></p>
     <button onclick="createRoom()">Criar Sala</button>
-    <br />
-    <input id="roomIdInput" placeholder="ID da sala" maxlength="4" style="text-transform:uppercase"/>
+    <input id="roomIdInput" placeholder="ID da sala" maxlength="4" style="text-transform:uppercase" />
     <button onclick="joinRoom()">Entrar na Sala</button>
   </div>
 
   <!-- Tela sala -->
   <div id="room" class="hidden">
     <p>Sala: <b><span id="roomIdDisplay"></span></b></p>
+    
+    <!-- Container onde o usuário escolhe/visualiza cartela -->
     <div id="cardsContainer"></div>
+    
+    <!-- Botão Iniciar (só dono vê) -->
     <button id="startGameBtn" onclick="startGame()" class="hidden">Iniciar Jogo</button>
+    
+    <!-- Status do jogo -->
     <p id="gameStatus"></p>
 
+    <!-- Cartela para marcar números -->
     <div id="bingoBoard" class="hidden"></div>
+    
+    <!-- Botão BINGO -->
     <button id="bingoBtn" onclick="declareBingo()" class="hidden">BINGO!</button>
 
-    <div id="drawnNumbers" style="margin-top: 15px;">
+    <!-- Números sorteados -->
+    <div id="drawnNumbers" style="margin-top: 20px;">
       <h4>Números sorteados:</h4>
       <p id="drawnList"></p>
     </div>
@@ -88,10 +51,8 @@
 
   <!-- Socket.IO -->
   <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
-
-  <!-- Seu script principal -->
+  <!-- Script principal -->
   <script src="script.js"></script>
 
 </body>
 </html>
-
