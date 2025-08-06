@@ -60,11 +60,38 @@ socket.on("cardsGenerated", (cards) => {
   container.innerHTML = "<h3>Escolha uma cartela:</h3>";
 
   cards.forEach((card, index) => {
-    const div = document.createElement("div");
-    div.textContent = card.join(", ");
-    div.onclick = () => selectCard(index, card);
-    container.appendChild(div);
-  });
+  const div = document.createElement("div");
+  div.classList.add("bingo-card");
+
+  // Cabeçalho BINGO
+  const header = document.createElement("div");
+  header.classList.add("bingo-header");
+  header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
+  div.appendChild(header);
+
+  // Grade de números
+  const grid = document.createElement("div");
+  grid.classList.add("bingo-grid");
+
+  // Distribuir os 15 números em 5 colunas (3 por coluna)
+  for (let i = 0; i < 20; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("bingo-cell");
+
+    // Se tiver menos que 20 números, deixar vazios
+    cell.textContent = card[i] !== undefined ? card[i] : "";
+
+    grid.appendChild(cell);
+  }
+
+  div.appendChild(grid);
+
+  // Clique para selecionar cartela
+  div.onclick = () => selectCard(index, card);
+
+  container.appendChild(div);
+});
+
 });
 
 function selectCard(index, card) {
