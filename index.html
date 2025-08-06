@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bingo Multiplayer</title>
+  <link rel="stylesheet" href="style.css">
   <style>
+    /* --- Estilos padrões das outras telas (lobby, sala, etc) --- */
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
@@ -51,12 +53,12 @@
 </head>
 <body>
 
-  <!-- Tela de login -->
-  <div id="login">
-    <h2>Entre com seu nome</h2>
-    <input id="username" placeholder="Seu nome" />
+  <!-- Tela de login (com classe gamer para novo design) -->
+  <div id="login" class="login-container">
+    <h2 class="title">Bingo Multiplayer</h2>
+    <input id="username" placeholder="Digite seu nome" class="input-gamer" />
     <br />
-    <button onclick="enterGame()">Entrar</button>
+    <button onclick="enterGame()" class="btn-gamer">Entrar</button>
   </div>
 
   <!-- Tela lobby -->
