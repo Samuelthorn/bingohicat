@@ -129,22 +129,35 @@ function renderBingoBoard(card) {
   const board = document.getElementById("bingoBoard");
   board.innerHTML = "";
 
-  card.forEach((num) => {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-    cell.textContent = num;
+  // Cabeçalho BINGO
+  const header = document.createElement("div");
+  header.classList.add("bingo-header");
+  header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
+  board.appendChild(header);
 
+  // Grid números
+  const grid = document.createElement("div");
+  grid.classList.add("bingo-grid");
+
+  for (let i = 0; i < 20; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("bingo-cell");
+
+    if (card[i] !== undefined) cell.textContent = card[i];
+
+    // Marcar clicando
     cell.onclick = () => {
-      // Só pode marcar se o número foi sorteado
-      if (drawnNumbers.includes(num)) {
+      if (drawnNumbers.includes(card[i])) {
         cell.classList.toggle("marked");
       } else {
         alert("Você só pode marcar números sorteados!");
       }
     };
 
-    board.appendChild(cell);
-  });
+    grid.appendChild(cell);
+  }
+
+  board.appendChild(grid);
 }
 
 // ========== DECLARAR BINGO ==========
