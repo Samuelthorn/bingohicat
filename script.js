@@ -154,7 +154,7 @@ socket.on("gameStarted", () => {
 socket.on("numberDrawn", ({ number, allNumbers }) => {
   drawnNumbers = allNumbers;
 
-  // Renderizar bolas de bingo no lugar de texto simples
+  // Renderizar bolas de bingo no lugar de texto simples (mais novo à esquerda)
   const drawnContainer = document.getElementById("drawnList");
   drawnContainer.innerHTML = ""; // Limpar
 
@@ -162,7 +162,8 @@ socket.on("numberDrawn", ({ number, allNumbers }) => {
     const ball = document.createElement("div");
     ball.classList.add("bingo-ball"); // classe da bola
     ball.textContent = num;
-    drawnContainer.appendChild(ball);
+    // Adiciona no início para mais novo ficar à esquerda
+    drawnContainer.prepend(ball);
   });
 });
 
