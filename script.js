@@ -187,9 +187,10 @@ function renderBingoBoard(card) {
         cell.textContent = "★";
         cell.classList.add("free", "marked");
       } else {
-        cell.textContent = card[numberIndex];
+        let cellNumber = card[numberIndex];
+        cell.textContent = cellNumber;
         cell.onclick = () => {
-          if (drawnNumbers.includes(card[numberIndex])) {
+          if (drawnNumbers.includes(cellNumber)) {
             cell.classList.toggle("marked");
           } else {
             alert("Você só pode marcar números sorteados!");
