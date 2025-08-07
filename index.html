@@ -8,51 +8,52 @@
 </head>
 <body class="login-active">
 
-  <!-- Tela de login -->
-  <div id="login" class="login-container">
-    <h2>Bingo Multiplayer</h2>
-    <input id="username" placeholder="Digite seu nome" />
-    <button onclick="enterGame()">Entrar</button>
-  </div>
-
-  <!-- Tela lobby -->
-  <div id="lobby" class="hidden">
-    <p>Olá, <b><span id="playerName"></span></b></p>
-    <button onclick="createRoom()">Criar Sala</button>
-    <input id="roomIdInput" placeholder="ID da sala" maxlength="4" style="text-transform:uppercase" />
-    <button onclick="joinRoom()">Entrar na Sala</button>
-  </div>
-
-  <!-- Tela sala -->
-  <div id="room" class="hidden">
-    <p>Sala: <b><span id="roomIdDisplay"></span></b></p>
-    
-    <!-- Container onde o usuário escolhe/visualiza cartela -->
-    <div id="cardsContainer"></div>
-    
-    <!-- Botão Iniciar (só dono vê) -->
-    <button id="startGameBtn" onclick="startGame()" class="hidden">Iniciar Jogo</button>
-    
-    <!-- Status do jogo -->
-    <p id="gameStatus"></p>
-
-    <!-- Cartela para marcar números -->
-    <div id="bingoBoard" class="hidden"></div>
-    
-    <!-- Botão BINGO -->
-    <button id="bingoBtn" onclick="declareBingo()" class="hidden">BINGO!</button>
-
-    <!-- Números sorteados -->
-    <div id="drawnNumbers" style="margin-top: 20px;">
-      <h4>Números sorteados:</h4>
-      <p id="drawnList"></p>
+  <main>
+    <!-- Tela de login -->
+    <div id="login" class="login-container">
+      <h2>Bingo Multiplayer</h2>
+      <input id="username" placeholder="Digite seu nome" />
+      <button onclick="enterGame()">Entrar</button>
     </div>
-  </div>
+
+    <!-- Tela lobby -->
+    <div id="lobby" class="hidden">
+      <p>Olá, <b><span id="playerName"></span></b></p>
+      <button onclick="createRoom()">Criar Sala</button>
+      <input id="roomIdInput" placeholder="ID da sala" maxlength="4" style="text-transform:uppercase" />
+      <button onclick="joinRoom()">Entrar na Sala</button>
+    </div>
+
+    <!-- Tela sala -->
+    <div id="room" class="hidden">
+      <p>Sala: <b><span id="roomIdDisplay"></span></b></p>
+      
+      <!-- Container de cartelas -->
+      <div id="cardsContainer"></div>
+
+      <!-- Botão Iniciar (apenas dono vê) -->
+      <button id="startGameBtn" class="hidden">Iniciar Jogo</button>
+      
+      <!-- Status do jogo -->
+      <p id="gameStatus"></p>
+
+      <!-- Cartela selecionada para marcar -->
+      <div id="bingoBoard" class="hidden"></div>
+      
+      <!-- Botão BINGO -->
+      <button id="bingoBtn" class="hidden">BINGO!</button>
+
+      <!-- Números sorteados -->
+      <div id="drawnNumbers" style="margin-top: 20px;">
+        <h4>Números sorteados:</h4>
+        <div id="drawnList"></div>
+      </div>
+    </div>
+  </main>
 
   <!-- Socket.IO -->
   <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
   <!-- Script principal -->
   <script src="script.js"></script>
-
 </body>
 </html>
