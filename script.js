@@ -56,7 +56,6 @@ socket.on("cardsGenerated", (cards) => {
     const div = document.createElement("div");
     div.classList.add("bingo-card");
 
-    // Ordenar os números da cartela (excluindo o centro)
     const sortedCard = [...card].sort((a, b) => a - b);
 
     const header = document.createElement("div");
@@ -187,7 +186,7 @@ function renderBingoBoard(card) {
         cell.textContent = "★";
         cell.classList.add("free", "marked");
       } else {
-        let cellNumber = card[numberIndex];
+        const cellNumber = card[numberIndex];
         cell.textContent = cellNumber;
         cell.onclick = () => {
           if (drawnNumbers.includes(cellNumber)) {
@@ -207,16 +206,16 @@ function renderBingoBoard(card) {
 }
 
 // ========== DECLARAR BINGO ==========
-window.declareBingo = function () {
-  const markedCells = document.querySelectorAll(".bingo-cell.marked").length;
-  const totalToMark = 24;
+document.getElementById("bingoBtn").addEventListener("click", () => {
+  const marked = document.querySelectorAll("#bingoBoard .bingo-cell.marked").length;
+  const required = 24;
 
-  if (markedCells === totalToMark) {
-    socket.emit("declareBingo", { roomId, username });
+  if (marked === required) {
+    socket.emit("declareBingo", { roomId });
   } else {
     alert("Você ainda não marcou todos os números!");
   }
-};
+});
 
 socket.on("bingoDeclared", (winner) => {
   document.getElementById("gameStatus").innerText = `${winner} fez BINGO!`;
