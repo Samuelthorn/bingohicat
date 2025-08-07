@@ -70,16 +70,24 @@ socket.on("cardsGenerated", (cards) => {
     header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
     div.appendChild(header);
 
-    // Grade de números (3 linhas × 5 colunas)
+    // Grade de números (5 linhas × 5 colunas)
     const grid = document.createElement("div");
     grid.classList.add("bingo-grid");
 
-    for (let row = 0; row < 3; row++) {
+    for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
         const indexNum = row * 5 + col;
         const cell = document.createElement("div");
         cell.classList.add("bingo-cell");
-        cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
+
+        // Estrela no centro (linha 3, coluna 3 = index 12)
+        if (row === 2 && col === 2) {
+          cell.innerHTML = "★";
+          cell.classList.add("free-space");
+        } else {
+          cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
+        }
+
         grid.appendChild(cell);
       }
     }
@@ -110,16 +118,24 @@ function selectCard(index, card) {
   header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
   div.appendChild(header);
 
-  // Grade de números (3 linhas × 5 colunas)
+  // Grade de números (5 linhas × 5 colunas)
   const grid = document.createElement("div");
   grid.classList.add("bingo-grid");
 
-  for (let row = 0; row < 3; row++) {
+  for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const indexNum = row * 5 + col;
       const cell = document.createElement("div");
       cell.classList.add("bingo-cell");
-      cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
+
+      // Estrela no centro
+      if (row === 2 && col === 2) {
+        cell.innerHTML = "★";
+        cell.classList.add("free-space", "marked");
+      } else {
+        cell.textContent = card[indexNum] !== undefined ? card[indexNum] : "";
+      }
+
       grid.appendChild(cell);
     }
   }
@@ -162,8 +178,7 @@ socket.on("numberDrawn", ({ number, allNumbers }) => {
     const ball = document.createElement("div");
     ball.classList.add("bingo-ball"); // classe da bola
     ball.textContent = num;
-    // Adiciona no início para mais novo ficar à esquerda
-    drawnContainer.prepend(ball);
+    drawnContainer.prepend(ball); // mais novo à esquerda
   });
 });
 
@@ -178,20 +193,27 @@ function renderBingoBoard(card) {
   header.innerHTML = "<span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>";
   board.appendChild(header);
 
-  // Grade de números (3 linhas × 5 colunas)
+  // Grade de números (5 linhas × 5 colunas)
   const grid = document.createElement("div");
   grid.classList.add("bingo-grid");
 
-  for (let row = 0; row < 3; row++) {
+  for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const indexNum = row * 5 + col;
       const cell = document.createElement("div");
       cell.classList.add("bingo-cell");
 
-      if (card[indexNum] !== undefined) cell.textContent = card[indexNum];
+      // Estrela no centro
+      if (row === 2 && col === 2) {
+        cell.innerHTML = "★";
+        cell.classList.add("free-space", "marked");
+      } else if (card[indexNum] !== undefined) {
+        cell.textContent = card[indexNum];
+      }
 
       // Marcar clicando
       cell.onclick = () => {
+        if (cell.classList.contains("free-space")) return; // estrela já marcada
         if (drawnNumbers.includes(card[indexNum])) {
           cell.classList.toggle("marked");
         } else {
@@ -209,7 +231,7 @@ function renderBingoBoard(card) {
 // ========== DECLARAR BINGO ==========
 window.declareBingo = function () {
   const markedCells = document.querySelectorAll(".bingo-cell.marked").length;
-  if (markedCells === bingoNumbers.length) {
+  if (markedCells === 25) { // 24 números + estrela marcada automaticamente
     socket.emit("declareBingo", { roomId, username });
   } else {
     alert("Você ainda não marcou todos os números!");
