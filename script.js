@@ -231,15 +231,21 @@ function renderBingoBoard(card) {
 
 // ========== DECLARAR BINGO ==========
 document.getElementById("bingoBtn").addEventListener("click", () => {
-  const marked = document.querySelectorAll("#bingoBoard .bingo-cell.marked").length;
-  const required = 24;
+  const markedCells = document.querySelectorAll("#bingoBoard .bingo-cell.marked");
+  const markedNumbers = Array.from(markedCells)
+    .map(cell => parseInt(cell.textContent))
+    .filter(num => !isNaN(num)); // remove a estrela ★
 
-  if (marked === required) {
+  const requiredNumbers = selectedCard.filter(num => drawnNumbers.includes(num));
+  const allMarked = requiredNumbers.every(num => markedNumbers.includes(num));
+
+  if (allMarked && requiredNumbers.length === markedNumbers.length) {
     socket.emit("declareBingo", { roomId });
   } else {
-    alert("Você ainda não marcou todos os números!");
+    alert("Você precisa marcar todos os números sorteados da sua cartela!");
   }
 });
+
 
 // Nova funcionalidade: mostrar modal com vencedor
 socket.on("bingoDeclared", (winnerData) => {
