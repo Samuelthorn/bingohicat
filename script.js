@@ -7,17 +7,15 @@ let roomId = "";
 let selectedCard = null;
 let bingoNumbers = [];
 let drawnNumbers = [];
-let isRoomOwner = false; // novo: saber se o jogador é dono da sala
+let isRoomOwner = false;
 
 // ====== VOZ (Speech API) ======
 function falar(texto) {
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.lang = "pt-BR";
-
   const voices = window.speechSynthesis.getVoices();
   const vozFeminina = voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('feminina'));
   if (vozFeminina) utterance.voice = vozFeminina;
-
   speechSynthesis.speak(utterance);
 }
 
@@ -37,7 +35,7 @@ window.createRoom = function () {
     if (response.error) return alert(response.error);
 
     roomId = response.roomId;
-    isRoomOwner = true; // marca dono da sala
+    isRoomOwner = true;
 
     document.getElementById("lobby").classList.add("hidden");
     document.getElementById("room").classList.remove("hidden");
@@ -55,7 +53,7 @@ window.joinRoom = function () {
   socket.emit("joinRoom", { roomId, username }, (response) => {
     if (response.error) return alert(response.error);
 
-    isRoomOwner = response.isOwner || false; // backend deve informar
+    isRoomOwner = response.isOwner || false;
 
     document.getElementById("lobby").classList.add("hidden");
     document.getElementById("room").classList.remove("hidden");
@@ -66,6 +64,25 @@ window.joinRoom = function () {
     }
   });
 };
+
+// ========== ATUALIZAÇÃO DE JOGADORES ==========
+socket.on("playersUpdate", (players) => {
+  const playerList = document.getElementById("playerList");
+  const playerCount = document.getElementById("playerCount");
+
+  if (playerList) {
+    playerList.innerHTML = "";
+    Object.values(players).forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = p.username;
+      playerList.appendChild(li);
+    });
+  }
+
+  if (playerCount) {
+    playerCount.textContent = `🎮 Jogadores online: ${Object.keys(players).length}`;
+  }
+});
 
 // ========== ESCOLHER CARTELA ==========
 socket.on("cardsGenerated", (cards) => {
@@ -169,7 +186,7 @@ socket.on("gameStarted", () => {
   document.getElementById("gameStatus").innerText = "O jogo começou! Marque seus números.";
 });
 
-// ========== SORTEIO DE NÚMEROS ==========
+// ========== NÚMERO SORTEADO ==========
 socket.on("numberDrawn", ({ number, allNumbers }) => {
   drawnNumbers = allNumbers;
 
@@ -183,11 +200,9 @@ socket.on("numberDrawn", ({ number, allNumbers }) => {
     drawnContainer.prepend(ball);
   });
 
-  // 🔊 Fala o número sorteado
   falar(`Número ${number}`);
 });
 
-// Renderiza a cartela 5x5 para marcar
 function renderBingoBoard(card) {
   const board = document.getElementById("bingoBoard");
   board.innerHTML = "";
@@ -234,7 +249,7 @@ document.getElementById("bingoBtn").addEventListener("click", () => {
   const markedCells = document.querySelectorAll("#bingoBoard .bingo-cell.marked");
   const markedNumbers = Array.from(markedCells)
     .map(cell => parseInt(cell.textContent))
-    .filter(num => !isNaN(num)); // remove a estrela ★
+    .filter(num => !isNaN(num));
 
   const requiredNumbers = selectedCard.filter(num => drawnNumbers.includes(num));
   const allMarked = requiredNumbers.every(num => markedNumbers.includes(num));
@@ -246,10 +261,7 @@ document.getElementById("bingoBtn").addEventListener("click", () => {
   }
 });
 
-
-// Nova funcionalidade: mostrar modal com vencedor
 socket.on("bingoDeclared", (winnerData) => {
-  // winnerData: { winnerName: string, roomOwner: string }
   const winnerModal = document.getElementById("winnerModal");
   const winnerText = document.getElementById("winnerText");
   const newGameBtn = document.getElementById("newGameBtn");
@@ -257,52 +269,38 @@ socket.on("bingoDeclared", (winnerData) => {
   winnerText.innerText = `${winnerData.winnerName} fez BINGO!`;
   winnerModal.classList.remove("hidden");
 
-  // Se eu for dono da sala, mostro botão novo jogo
   if (username === winnerData.roomOwner) {
     newGameBtn.classList.remove("hidden");
   } else {
     newGameBtn.classList.add("hidden");
   }
 
-  // Desabilita botão bingo para todos
   document.getElementById("bingoBtn").classList.add("hidden");
-
-  // 🔊 Grita BINGOU!
   falar("BINGOU!");
 });
 
-// Botão iniciar nova partida (só dono da sala)
 document.getElementById("newGameBtn").addEventListener("click", () => {
   socket.emit("startNewGame", { roomId });
   closeWinnerModal();
 });
-
-// Fechar modal (opcional, pode adicionar depois se quiser)
-// function closeWinnerModal() {
-//   const winnerModal = document.getElementById("winnerModal");
-//   winnerModal.classList.add("hidden");
-// }
 
 function closeWinnerModal() {
   const winnerModal = document.getElementById("winnerModal");
   winnerModal.classList.add("hidden");
 }
 
-// Ouvir evento para resetar jogo (nova partida)
 socket.on("newGameStarted", () => {
   closeWinnerModal();
   drawnNumbers = [];
   selectedCard = null;
   bingoNumbers = [];
 
-  // Voltar para seleção de cartelas
   document.getElementById("cardsContainer").style.display = "flex";
   document.getElementById("cardsContainer").innerHTML = "";
   document.getElementById("bingoBoard").classList.add("hidden");
   document.getElementById("bingoBtn").classList.add("hidden");
   document.getElementById("gameStatus").innerText = "";
 
-  // Mostra botão iniciar se for dono da sala
   if (isRoomOwner) {
     document.getElementById("startGameBtn").classList.remove("hidden");
   }
