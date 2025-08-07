@@ -8,6 +8,18 @@ let selectedCard = null;
 let bingoNumbers = [];
 let drawnNumbers = [];
 
+// ====== VOZ (Speech API) ======
+function falar(texto) {
+  const utterance = new SpeechSynthesisUtterance(texto);
+  utterance.lang = "pt-BR";
+
+  const voices = window.speechSynthesis.getVoices();
+  const vozFeminina = voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('feminina'));
+  if (vozFeminina) utterance.voice = vozFeminina;
+
+  speechSynthesis.speak(utterance);
+}
+
 // ========== LOGIN ==========
 window.enterGame = function () {
   username = document.getElementById("username").value.trim();
@@ -161,6 +173,9 @@ socket.on("numberDrawn", ({ number, allNumbers }) => {
     ball.textContent = num;
     drawnContainer.prepend(ball);
   });
+
+  // 🔊 Fala o número sorteado
+  falar(`Número ${number}`);
 });
 
 // Renderiza a cartela 5x5 para marcar
@@ -220,4 +235,7 @@ document.getElementById("bingoBtn").addEventListener("click", () => {
 socket.on("bingoDeclared", (winner) => {
   document.getElementById("gameStatus").innerText = `${winner} fez BINGO!`;
   document.getElementById("bingoBtn").classList.add("hidden");
+
+  // 🔊 Grita BINGOU!
+  falar("BINGOU!");
 });
