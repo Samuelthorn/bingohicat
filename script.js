@@ -88,7 +88,7 @@ socket.on("playersUpdate", (players) => {
 socket.on("cardsGenerated", (cards) => {
   const container = document.getElementById("cardsContainer");
   container.classList.remove("hidden");
-  container.innerHTML = "<h3>Escolha uma cartela:</h3>";
+
 
   cards.forEach((card, index) => {
     const div = document.createElement("div");
