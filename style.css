@@ -148,20 +148,20 @@ body.login-active {
 /* ===== CARTELA BINGO ===== */
 #cards-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* impede quebrar para a linha de baixo */
   justify-content: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 .card-choice {
-  flex: 1 1 calc(25% - 10px); /* 4 por linha */
-  max-width: calc(25% - 10px);
-  aspect-ratio: 1 / 1; /* quadrado */
+  flex: 0 0 25%; /* sempre 25% da tela */
+  max-width: 25%;
+  aspect-ratio: 1 / 1; /* mantém quadrado */
   border: 2px solid #ccc;
   border-radius: 10px;
-  padding: 8px;
   background: #222;
   color: white;
+  padding: 5px;
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -174,21 +174,6 @@ body.login-active {
   border-color: #4caf50;
 }
 
-/* Para telas menores, 3 por linha */
-@media (max-width: 768px) {
-  .card-choice {
-    flex: 1 1 calc(33.33% - 10px);
-    max-width: calc(33.33% - 10px);
-  }
-}
-
-/* Para telas muito pequenas, 2 por linha */
-@media (max-width: 480px) {
-  .card-choice {
-    flex: 1 1 calc(50% - 10px);
-    max-width: calc(50% - 10px);
-  }
-}
 
 
 
