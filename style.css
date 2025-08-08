@@ -175,7 +175,7 @@ body.login-active {
 
 /* ===== CARTELA DE BINGO ===== */
 .bingo-card {
-  width: 100%;              /* ocupa todo espaço do .card-choice */
+  width: 25%;              /* ocupa todo espaço do .card-choice */
   background: #222;
   border-radius: 15px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.5);
