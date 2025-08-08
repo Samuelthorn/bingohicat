@@ -9,14 +9,13 @@
 <body class="login-active">
 
   <main>
-    <!-- Tela de login -->
+
     <div id="login" class="login-container">
       <h2>Bingo Multiplayer</h2>
       <input id="username" placeholder="Digite seu nome" />
       <button onclick="enterGame()">Entrar</button>
     </div>
 
-    <!-- Tela lobby -->
     <div id="lobby" class="hidden">
       <p>Olá, <b><span id="playerName"></span></b></p>
       <button onclick="createRoom()">Criar Sala</button>
@@ -24,30 +23,27 @@
       <button onclick="joinRoom()">Entrar na Sala</button>
     </div>
 
-    <!-- Tela sala -->
     <div id="room" class="hidden">
       <p>Sala: <b><span id="roomIdDisplay"></span></b></p>
       <p id="playerCount" style="margin-top: 10px;">🎮 Jogadores online: 0</p>
-<!-- <ul id="playerList" style="list-style: none; padding: 0 0 10px 0;"></ul> -->
 
       
-      <!-- Container de cartelas -->
+
       <div id="cardsContainer"></div>
 
-      <!-- Botão Iniciar (apenas dono vê) -->
+
      <button id="startGameBtn" class="hidden" onclick="startGame()">Iniciar Jogo</button>
 
       
-      <!-- Status do jogo -->
       <p id="gameStatus"></p>
 
-      <!-- Cartela selecionada para marcar -->
+    
       <div id="bingoBoard" class="hidden"></div>
       
-      <!-- Botão BINGO -->
+
       <button id="bingoBtn" class="hidden">BINGO!</button>
 
-      <!-- Números sorteados -->
+
       <div id="drawnNumbers" style="margin-top: 20px;">
         <h4>Números sorteados:</h4>
         <div id="drawnList"></div>
@@ -55,7 +51,6 @@
     </div>
   </main>
 
-  <!-- Modal vencedor -->
   <div id="winnerModal" class="modal hidden">
     <div class="modal-content">
       <h2 id="winnerText"></h2>
@@ -63,9 +58,8 @@
     </div>
   </div>
 
-  <!-- Socket.IO -->
   <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
-  <!-- Script principal -->
+
   <script src="script.js"></script>
 </body>
 </html>
