@@ -161,7 +161,6 @@ body.login-active {
 /* ===== CARTELA SELECIONÁVEL ===== */
 .card-choice {
   flex: 0 0 250px;          /* largura fixa e rolagem horizontal */
-  aspect-ratio: 1 / 1;
   border: 2px solid #ccc;
   border-radius: 10px;
   background: #222;
@@ -390,9 +389,7 @@ body.login-active {
   flex: 0 0 25vw;      /* cada carta ocupa 25% da largura da viewport */
   max-width: 25vw;
   width: 25vw;
-  aspect-ratio: 1 / 1; /* mantém quadrado */
   box-sizing: border-box;
-  padding: 8px;
   background: #222;
   border-radius: 12px;
   overflow: hidden;
