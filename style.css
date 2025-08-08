@@ -389,6 +389,7 @@ body.login-active {
   flex: 0 0 25vw;      /* cada carta ocupa 25% da largura da viewport */
   max-width: 25vw;
   width: 25vw;
+  height: 30vw;
   box-sizing: border-box;
   background: #222;
   border-radius: 12px;
