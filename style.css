@@ -412,7 +412,7 @@ body.login-active {
   gap: 4px;
   width: 94%;
   height: calc(100% - 48px); /* 48px ~= espaço do header; ajuste se necessário */
-  padding: 6px;
+  padding: 4px;
 }
 
 #cardsContainer .bingo-cell {
