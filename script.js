@@ -227,13 +227,18 @@ function renderBingoBoard(card) {
       } else {
         const cellNumber = card[numberIndex];
         cell.textContent = cellNumber;
-        cell.onclick = () => {
-          if (drawnNumbers.includes(cellNumber)) {
-            cell.classList.toggle("marked");
-          } else {
-            alert("Você só pode marcar números sorteados!");
-          }
-        };
+       cell.onclick = () => {
+  if (!drawnNumbers.includes(cellNumber)) {
+    alert("Você só pode marcar números sorteados!");
+    return;
+  }
+
+  // Só marca se ainda não estiver marcado
+  if (!cell.classList.contains("marked")) {
+    cell.classList.add("marked");
+  }
+};
+
         numberIndex++;
       }
 
