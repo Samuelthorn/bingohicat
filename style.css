@@ -146,20 +146,22 @@ body.login-active {
 }
 
 /* ===== CARTELA BINGO ===== */
+/* ===== CONTAINER ===== */
 #cards-container {
   display: flex;
-  flex-direction: row; /* força em linha */
-  flex-wrap: nowrap;   /* não quebra */
-  justify-content: center;
-  gap: 5px; /* espaço entre cartelas */
-  overflow-x: auto; /* caso não caiba, rola pro lado */
-  width: 100vw;
+  flex-direction: row;
+  flex-wrap: nowrap;        /* nunca quebra linha */
+  justify-content: flex-start;
+  gap: 10px;                /* espaço entre cartelas */
+  overflow-x: auto;         /* rolagem horizontal */
+  padding: 10px;
+  scroll-snap-type: x mandatory; /* snap suave na rolagem */
 }
 
+/* ===== CARTELA SELECIONÁVEL ===== */
 .card-choice {
-  flex: 0 0 25%; /* largura fixa de 25% */
-  max-width: 25%;
-  aspect-ratio: 1 / 1; /* quadrada */
+  flex: 0 0 250px;          /* largura fixa e rolagem horizontal */
+  aspect-ratio: 1 / 1;
   border: 2px solid #ccc;
   border-radius: 10px;
   background: #222;
@@ -168,12 +170,12 @@ body.login-active {
   box-sizing: border-box;
   cursor: pointer;
   transition: transform 0.2s;
+  scroll-snap-align: start; /* trava na rolagem */
 }
 
-
-/* Cartela */
+/* ===== CARTELA DE BINGO ===== */
 .bingo-card {
-  width: 320px;
+  width: 100%;              /* ocupa todo espaço do .card-choice */
   background: #222;
   border-radius: 15px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.5);
