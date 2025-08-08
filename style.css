@@ -368,4 +368,69 @@ body.login-active {
 }
 
 
+/* ======= LAYOUT: 3 CARTELAS LADO A LADO (SELEÇÃO) ======= */
+/* Use o ID exato que você tem no HTML: #cardsContainer */
+#cardsContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;        /* nunca quebra linha */
+  justify-content: center;  /* centraliza as 3 cartas */
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-x: auto;         /* caso precise rolar lateralmente */
+  width: 100%;
+}
+
+/* Torna a .bingo-card dentro do container responsiva e quadrada.
+   Isso tem especificidade maior que `.bingo-card { width: 320px }`,
+   então vai sobrescrever esse valor quando estiver dentro do #cardsContainer. */
+#cardsContainer .bingo-card {
+  flex: 0 0 25vw;      /* cada carta ocupa 25% da largura da viewport */
+  max-width: 25vw;
+  width: 25vw;
+  aspect-ratio: 1 / 1; /* mantém quadrado */
+  box-sizing: border-box;
+  padding: 8px;
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajustes visuais para cabeçalho e grade quando em modo de seleção */
+#cardsContainer .bingo-header {
+  font-size: clamp(14px, 2.2vw, 20px);
+  padding: 6px 0;
+  line-height: 1;
+}
+
+#cardsContainer .bingo-grid {
+  /* torna as linhas proporcionais ao container (não fixas 60px) */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+  height: calc(100% - 48px); /* 48px ~= espaço do header; ajuste se necessário */
+  padding: 6px;
+}
+
+#cardsContainer .bingo-cell {
+  font-size: clamp(12px, 1.5vw, 18px);
+  border-radius: 6px;
+}
+
+/* Mantém o comportamento hover/selected */
+#cardsContainer .bingo-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+#cardsContainer .bingo-card.selected {
+  border: 3px solid #ff7eb3;
+  box-shadow: 0 0 18px #ff7eb3;
+}
 
