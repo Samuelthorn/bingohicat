@@ -148,24 +148,27 @@ body.login-active {
 /* ===== CARTELA BINGO ===== */
 #cards-container {
   display: flex;
-  flex-wrap: nowrap; /* impede quebra de linha */
-  justify-content: space-evenly; /* distribui igualmente */
-  width: 100vw; /* ocupa toda a largura da tela */
+  flex-direction: row; /* força em linha */
+  flex-wrap: nowrap;   /* não quebra */
+  justify-content: center;
+  gap: 5px; /* espaço entre cartelas */
+  overflow-x: auto; /* caso não caiba, rola pro lado */
+  width: 100vw;
 }
 
 .card-choice {
-  width: 25vw; /* exatamente 25% da largura da tela */
-  aspect-ratio: 1 / 1;
+  flex: 0 0 25%; /* largura fixa de 25% */
+  max-width: 25%;
+  aspect-ratio: 1 / 1; /* quadrada */
   border: 2px solid #ccc;
   border-radius: 10px;
   background: #222;
   color: white;
   padding: 5px;
+  box-sizing: border-box;
   cursor: pointer;
   transition: transform 0.2s;
 }
-
-
 
 
 /* Cartela */
