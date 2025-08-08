@@ -1,7 +1,7 @@
-// Conectar ao backend via Socket.IO
+
 const socket = io("https://bingo.punkilive.top/");
 
-// Variáveis globais
+
 let username = "";
 let roomId = "";
 let selectedCard = null;
@@ -9,7 +9,6 @@ let bingoNumbers = [];
 let drawnNumbers = [];
 let isRoomOwner = false;
 
-// ====== VOZ (Speech API) ======
 function falar(texto) {
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.lang = "pt-BR";
@@ -19,7 +18,7 @@ function falar(texto) {
   speechSynthesis.speak(utterance);
 }
 
-// ========== LOGIN ==========
+
 window.enterGame = function () {
   username = document.getElementById("username").value.trim();
   if (!username) return alert("Digite um nome!");
@@ -29,7 +28,6 @@ window.enterGame = function () {
   document.getElementById("playerName").innerText = username;
 };
 
-// ========== CRIAR SALA ==========
 window.createRoom = function () {
   socket.emit("createRoom", { username }, (response) => {
     if (response.error) return alert(response.error);
@@ -44,7 +42,7 @@ window.createRoom = function () {
   });
 };
 
-// ========== ENTRAR NA SALA EXISTENTE ==========
+
 window.joinRoom = function () {
   const inputId = document.getElementById("roomIdInput").value.trim().toUpperCase();
   if (!inputId) return alert("Digite o ID da sala!");
@@ -65,7 +63,7 @@ window.joinRoom = function () {
   });
 };
 
-// ========== ATUALIZAÇÃO DE JOGADORES ==========
+
 socket.on("playersUpdate", (players) => {
   const playerList = document.getElementById("playerList");
   const playerCount = document.getElementById("playerCount");
@@ -84,7 +82,7 @@ socket.on("playersUpdate", (players) => {
   }
 });
 
-// ========== ESCOLHER CARTELA ==========
+
 socket.on("cardsGenerated", (cards) => {
   const container = document.getElementById("cardsContainer");
   container.classList.remove("hidden");
@@ -168,7 +166,7 @@ function selectCard(index, card) {
   container.appendChild(div);
 }
 
-// ========== INICIAR JOGO ==========
+
 window.startGame = function () {
   if (!selectedCard) return alert("Escolha uma cartela antes de iniciar!");
   socket.emit("startGame", { roomId });
@@ -233,7 +231,7 @@ function renderBingoBoard(card) {
     return;
   }
 
-  // Só marca se ainda não estiver marcado
+
   if (!cell.classList.contains("marked")) {
     cell.classList.add("marked");
   }
@@ -249,7 +247,6 @@ function renderBingoBoard(card) {
   board.appendChild(grid);
 }
 
-// ========== DECLARAR BINGO ==========
 document.getElementById("bingoBtn").addEventListener("click", () => {
   const markedCells = document.querySelectorAll("#bingoBoard .bingo-cell.marked");
   const markedNumbers = Array.from(markedCells)
